@@ -85,6 +85,14 @@ describe('UserService', () => {
       expect(listUser).toHaveLength(3);
       expect(mockPrisma.user.findMany).toHaveBeenCalledTimes(1);
     });
+
+    it('deve retornar uma excessão ao listar usuários.', async () => {
+      mockPrisma.user.findMany.mockRejectedValueOnce(new Error());
+      await testUserService.findAll().catch((e) => {
+        expect(e).toBeInstanceOf(Error);
+      });
+      expect(mockPrisma.user.findMany).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('findeOn', () => {
