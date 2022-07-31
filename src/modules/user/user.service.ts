@@ -14,6 +14,7 @@ export class UserService {
       ...data,
       senha: await bcrypt.hash(data.senha, 10),
     };
+    //this.prisma.$connect();
 
     const userExists = await this.prisma.user.findFirst({
       where: {
@@ -36,13 +37,17 @@ export class UserService {
   }
 
   async findAll(): Promise<UpdateUserDto[]> {
-    const users = await this.prisma.user.findMany({
-      select: {
-        id: true,
-        nome: true,
-        email: true,
-      },
-    });
+    const users = await this.prisma.user
+      .findMany({
+        select: {
+          id: true,
+          nome: true,
+          email: true,
+        },
+      })
+      .catch(() => {
+        throw new Error('Error listing users.');
+      });
 
     return users;
   }
@@ -69,10 +74,9 @@ export class UserService {
   }
 
   async update(id: string, data: UpdateUserDto): Promise<UpdateUserDto> {
-    const user = {
-      ...data,
-      senha: await bcrypt.hash(data.senha, 10),
-    };
+    if (data.senha) {
+      data.senha = await bcrypt.hash(data.senha, 10);
+    }
 
     await this.prisma.user
       .findUnique({
@@ -88,7 +92,7 @@ export class UserService {
       where: {
         id,
       },
-      data: user,
+      data,
     });
 
     return {
@@ -98,13 +102,17 @@ export class UserService {
   }
 
   async remove(id: string) {
-    await this.prisma.user
+    const userExists = await this.prisma.user
       .findUnique({
         where: { id },
       })
       .catch(() => {
         throw new Error('User not existes!');
       });
+
+    if (!userExists) {
+      throw new Error('User not existes!');
+    }
 
     return await this.prisma.user.delete({
       where: {
