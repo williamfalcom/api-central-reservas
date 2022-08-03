@@ -15,6 +15,7 @@ describe('UserService', () => {
       findUnique: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+      findUniqueOrThrow: jest.fn(),
     },
   };
 
@@ -40,6 +41,7 @@ describe('UserService', () => {
     mockPrisma.user.findUnique.mockReset();
     mockPrisma.user.update.mockReset();
     mockPrisma.user.delete.mockReset();
+    mockPrisma.user.findUniqueOrThrow.mockReset();
   });
 
   it('deve estar definido.', () => {
@@ -95,10 +97,10 @@ describe('UserService', () => {
     });
   });
 
-  describe('findeOn', () => {
+  describe('findeOne', () => {
     it('deve retornar dados da busca do usuário.', async () => {
       const user = TestUtil.givMeAValidUser();
-      mockPrisma.user.findUnique.mockResolvedValueOnce(user);
+      mockPrisma.user.findUniqueOrThrow.mockResolvedValueOnce(user);
       const userFindOn = await testUserService.findOne(
         '62e22d891c3d34192ef20dda',
       );
@@ -107,11 +109,11 @@ describe('UserService', () => {
         nome: 'Usuário válido',
         senha: undefined,
       });
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(mockPrisma.user.findUniqueOrThrow).toHaveBeenCalledTimes(1);
     });
 
     it('deve retornar uma excessão de falha ao buscar usuário.', async () => {
-      mockPrisma.user.findUnique.mockRejectedValueOnce(new Error());
+      mockPrisma.user.findUniqueOrThrow.mockRejectedValueOnce(new Error());
 
       await testUserService.findOne('62e22d891c3d34192ef27193').catch((e) => {
         expect(e).toBeInstanceOf(Error);
@@ -119,14 +121,14 @@ describe('UserService', () => {
           message: 'User not existes!',
         });
       });
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(mockPrisma.user.findUniqueOrThrow).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('update', () => {
     it('deve fazer o update do usuário indicado.', async () => {
       const user = TestUtil.givMeAValidUser();
-      mockPrisma.user.findUnique.mockResolvedValueOnce(user);
+      mockPrisma.user.findUniqueOrThrow.mockResolvedValueOnce(user);
       mockPrisma.user.update.mockResolvedValueOnce(user);
       const userUp = await testUserService.update(
         '62e22d891c3d34192ef20dda',
@@ -136,13 +138,13 @@ describe('UserService', () => {
         nome: 'Usuário válido',
         senha: undefined,
       });
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(mockPrisma.user.findUniqueOrThrow).toHaveBeenCalledTimes(1);
       expect(mockPrisma.user.update).toHaveBeenCalledTimes(1);
     });
 
     it('deve retornar uma excessão ao tentar fazer update do usuário.', async () => {
       const user = TestUtil.givMeAValidUser();
-      mockPrisma.user.findUnique.mockRejectedValueOnce(new Error());
+      mockPrisma.user.findUniqueOrThrow.mockRejectedValueOnce(new Error());
       await testUserService
         .update('62e22d891c3d34192ef27193', user)
         .catch((e) => {
@@ -152,54 +154,54 @@ describe('UserService', () => {
           });
         });
 
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(mockPrisma.user.findUniqueOrThrow).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('remove', () => {
     it('deve remover o usuário com sucesso.', async () => {
       const user = TestUtil.givMeAValidUser();
-      mockPrisma.user.findUnique.mockResolvedValueOnce(user);
+      mockPrisma.user.findUniqueOrThrow.mockResolvedValueOnce(user);
       mockPrisma.user.delete.mockResolvedValueOnce(user);
 
       const userDeleted = await testUserService.remove(
         '62e22d891c3d34192ef20dda',
       );
       expect(userDeleted).toMatchObject(user);
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(mockPrisma.user.findUniqueOrThrow).toHaveBeenCalledTimes(1);
       expect(mockPrisma.user.delete).toHaveBeenCalledTimes(1);
     });
 
     it('deve retornar uma excessão ao tentar remover usuário', async () => {
-      mockPrisma.user.findUnique.mockRejectedValueOnce(new Error());
+      mockPrisma.user.findUniqueOrThrow.mockRejectedValueOnce(new Error());
       await testUserService.remove('62e22d891c3d34192ef27193').catch((e) => {
         expect(e).toBeInstanceOf(Error);
         expect(e).toMatchObject({
           message: 'User not existes!',
         });
       });
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(mockPrisma.user.findUniqueOrThrow).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('findByEmail', () => {
     it('deve encontrar um usuário buscando pelo email.', async () => {
       const user = TestUtil.givMeAValidUser();
-      mockPrisma.user.findUnique.mockResolvedValueOnce(user);
+      mockPrisma.user.findUniqueOrThrow.mockResolvedValueOnce(user);
       const userByEmail = await testUserService.findByEmail(user.email);
       expect(userByEmail).toMatchObject(user);
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(mockPrisma.user.findUniqueOrThrow).toHaveBeenCalledTimes(1);
     });
 
     it('deve retornar excessão ao buscar usuário por email.', async () => {
-      mockPrisma.user.findUnique.mockRejectedValueOnce(new Error());
+      mockPrisma.user.findUniqueOrThrow.mockRejectedValueOnce(new Error());
       await testUserService.findByEmail('teste').catch((e) => {
         expect(e).toBeInstanceOf(Error);
         expect(e).toMatchObject({
           message: 'User not existes wiht this email!',
         });
       });
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(mockPrisma.user.findUniqueOrThrow).toHaveBeenCalledTimes(1);
     });
   });
 });

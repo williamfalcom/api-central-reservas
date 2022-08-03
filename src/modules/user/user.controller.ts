@@ -13,26 +13,33 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { IsPublic } from '../../auth/decorators/is-public.decorator';
 
-//@ApiBearerAuth()
+@ApiBearerAuth()
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @IsPublic()
   @Post()
   @ApiOperation({
     description: 'Recurso para cadastrar novo usuário.',
     summary: 'Criar novo usuário.',
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     description: 'Erro de validação.',
     schema: {
       type: 'object',
       example: {
-        statusCode: 400,
+        statusCode: HttpStatus.BAD_REQUEST,
         message: ['email must be an email'],
         error: 'Bad Request',
       },
@@ -50,12 +57,12 @@ export class UserController {
     summary: 'Listagem de usuários.',
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     description: 'Erro ao listar usuários.',
     schema: {
       type: 'object',
       example: {
-        statusCode: 400,
+        statusCode: HttpStatus.BAD_REQUEST,
         message: ['Error listing users.'],
         error: 'Bad Request',
       },
@@ -73,12 +80,12 @@ export class UserController {
     summary: 'Dados do usuário.',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'Usuário não encontrados',
     schema: {
       type: 'object',
       example: {
-        statusCode: 404,
+        statusCode: HttpStatus.NOT_FOUND,
         message: 'User not existes!',
         error: 'Not Found',
       },
@@ -96,12 +103,12 @@ export class UserController {
     summary: 'Atualização de usuário.',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'Usuário não encontrado para atualização',
     schema: {
       type: 'object',
       example: {
-        statusCode: 404,
+        statusCode: HttpStatus.NOT_FOUND,
         message: 'User not existes!',
         error: 'Not Found',
       },
@@ -119,12 +126,12 @@ export class UserController {
     summary: 'Exclusão de usuário.',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'Usuário não encontrado.',
     schema: {
       type: 'object',
       example: {
-        statusCode: 404,
+        statusCode: HttpStatus.NOT_FOUND,
         message: 'User not existes!',
         error: 'Not Found',
       },

@@ -58,8 +58,9 @@ describe('ReservaController', () => {
 
     it('deve receber uma excessão de erro ao criar reserva.', async () => {
       const reserva = TestUtil.givMeAValidReserva();
+      const user = TestUtil.givMeAValidUser();
       mockService.create.mockRejectedValueOnce(new Error());
-      await testeReservaController.create(reserva).catch((e) => {
+      await testeReservaController.create(reserva, user).catch((e) => {
         expect(e).toBeInstanceOf(BadRequestException);
       });
       expect(mockService.create).toBeCalledTimes(1);

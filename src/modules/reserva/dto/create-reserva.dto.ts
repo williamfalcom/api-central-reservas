@@ -78,10 +78,11 @@ export class CreateReservaDto extends Reserva {
   @ApiProperty({
     type: String,
     description: 'ID do usuário que está criando a reserva.',
-    required: true,
+    required: false,
+    readOnly: true,
   })
   @IsString()
-  userId: string;
+  readonly userId: string;
 
   @ApiProperty({
     type: Object,
