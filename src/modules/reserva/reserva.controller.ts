@@ -16,11 +16,19 @@ import { ReservaService } from './reserva.service';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { UpdateReservaDto } from './dto/update-reserva.dto';
 import { CheckReservaPipe } from './pipes/check-reserva.pipe';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Reserva } from './entities/reserva.entity';
 import { CheckReservaUpdatePipe } from './pipes/check-reserva-update.pipe';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { User } from '../user/entities/user.entity';
 
-//@ApiBearerAuth()
+@ApiBearerAuth()
 @ApiTags('reserva')
 @Controller('reserva')
 export class ReservaController {
@@ -48,8 +56,15 @@ export class ReservaController {
     },
   })
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createReservaDto: CreateReservaDto): Promise<Reserva> {
-    return await this.reservaService.create(createReservaDto).catch((e) => {
+  async create(
+    @Body() createReservaDto: CreateReservaDto,
+    @CurrentUser() user: User,
+  ): Promise<Reserva> {
+    const data = {
+      ...createReservaDto,
+      userId: user.id,
+    };
+    return await this.reservaService.create(data).catch((e) => {
       throw new BadRequestException(e.message);
     });
   }
