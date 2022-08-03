@@ -1,19 +1,5 @@
-version: "3.1"
+version: '3.1'
 services:
-  db:
-    image: mongo
-    container_name: db
-    restart: always
-    volumes:
-      - ./.mongodb:/data/db
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: pass4679
-    networks:
-      - central-net
-
   app:
     image: node:16
     container_name: app
@@ -22,12 +8,10 @@ services:
     volumes:
       - .:/app
     ports:
-      - "3000:3000"
+      - '3000:3000'
     tty: true
     networks:
       - central-net
-    depends_on:
-      - db
 
 networks:
   central-net:
