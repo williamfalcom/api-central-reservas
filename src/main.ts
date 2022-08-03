@@ -29,6 +29,7 @@ async function bootstrap() {
     .setVersion('0.1')
     .addBearerAuth()
     .addTag('user', 'Rotas de Usuário')
+    .addTag('reserva', 'Rotas de Reserva')
     .addServer('http://localhost:3000', 'Desenvolvimento Local')
     .build();
 
