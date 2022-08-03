@@ -146,4 +146,23 @@ export class ReservaService {
       },
     });
   }
+
+  async findManyCheckInCheckOut(
+    checkIn: string | Date,
+    checkOut: string | Date,
+  ): Promise<Reserva[]> {
+    return await this.prisma.reserva.findMany({
+      where: {
+        OR: [
+          {
+            checkIn: { gte: checkIn },
+            checkOut: { lte: checkOut },
+          },
+        ],
+      },
+      include: {
+        hospedes: true,
+      },
+    });
+  }
 }
