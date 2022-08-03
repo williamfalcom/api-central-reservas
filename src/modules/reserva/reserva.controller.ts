@@ -41,6 +41,41 @@ export class ReservaController {
     summary: 'Criar nova Reserva.',
   })
   @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Reserva criada.',
+    schema: {
+      type: 'object',
+      example: {
+        id: '62ea248785a186da1dad30f5',
+        createdAt: '2022-08-03T07:32:23.906Z',
+        updatedAt: '2022-08-03T07:32:23.907Z',
+        nomeApartamento: 'Suíte Diamantina',
+        checkIn: '2022-08-12T12:03:00Z',
+        checkOut: '2022-08-15T12:03:00Z',
+        qtdHospeder: 3,
+        userId: '62e5efd9a840f407ac961a97',
+        hospedes: [
+          {
+            id: '62ea248785a186da1dad30f6',
+            createdAT: '2022-08-03T07:32:23.906Z',
+            updatedAt: '2022-08-03T07:32:23.907Z',
+            nome: 'Marcos da Silva',
+            email: 'marcos@mail.com',
+            reservaID: '62ea248785a186da1dad30f5',
+          },
+          {
+            id: '62ea248785a186da1dad30f6',
+            createdAT: '2022-08-03T07:32:23.906Z',
+            updatedAt: '2022-08-03T07:32:23.907Z',
+            nome: 'Noemi da Silva',
+            email: 'naomi@mail.com',
+            reservaID: '62ea248785a186da1dad30f5',
+          },
+        ],
+      },
+    },
+  })
+  @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Erro de validação.',
     schema: {
@@ -50,6 +85,7 @@ export class ReservaController {
         message: [
           'A data de check-id deve estar no mínimo 24 horas no futuro.',
           'A data para a reserva encontra-se ocupada.',
+          'O email do hospede (Marcos da silva) não é válido',
         ],
         error: 'Bad Request',
       },
@@ -74,6 +110,43 @@ export class ReservaController {
     description: 'Recurso para a listagem das reservas.',
     summary: 'Listar Reservas',
   })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Listagem de Reservas',
+    schema: {
+      type: 'object',
+      example: [
+        {
+          id: '62ea248785a186da1dad30f5',
+          createdAt: '2022-08-03T07:32:23.906Z',
+          updatedAt: '2022-08-03T07:32:23.907Z',
+          nomeApartamento: 'Suíte Diamantina',
+          checkIn: '2022-08-12T12:03:00Z',
+          checkOut: '2022-08-15T12:03:00Z',
+          qtdHospeder: 3,
+          userId: '62e5efd9a840f407ac961a97',
+          hospedes: [
+            {
+              id: '62ea248785a186da1dad30f6',
+              createdAT: '2022-08-03T07:32:23.906Z',
+              updatedAt: '2022-08-03T07:32:23.907Z',
+              nome: 'Marcos da Silva',
+              email: 'marcos@mail.com',
+              reservaID: '62ea248785a186da1dad30f5',
+            },
+            {
+              id: '62ea248785a186da1dad30f6',
+              createdAT: '2022-08-03T07:32:23.906Z',
+              updatedAt: '2022-08-03T07:32:23.907Z',
+              nome: 'Noemi da Silva',
+              email: 'naomi@mail.com',
+              reservaID: '62ea248785a186da1dad30f5',
+            },
+          ],
+        },
+      ],
+    },
+  })
   async findAll(): Promise<Reserva[]> {
     return await this.reservaService.findAll();
   }
@@ -83,6 +156,11 @@ export class ReservaController {
     description: 'Recurso para busca de reservar por ID.',
     summary: 'Busca Reserva por ID.',
   })
+  @ApiParam({
+    name: 'id',
+    description: 'ID da reserva para busca.',
+    example: '62ea248785a186da1dad30f5',
+  })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Reserva não encontrada',
@@ -90,8 +168,43 @@ export class ReservaController {
       type: 'object',
       example: {
         statusCode: HttpStatus.NOT_FOUND,
-        message: 'No Reserva found',
+        message: 'Reserva not found',
         error: 'Not Found',
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Dados da Reserva',
+    schema: {
+      type: 'object',
+      example: {
+        id: '62ea248785a186da1dad30f5',
+        createdAt: '2022-08-03T07:32:23.906Z',
+        updatedAt: '2022-08-03T07:32:23.907Z',
+        nomeApartamento: 'Suíte Diamantina',
+        checkIn: '2022-08-12T12:03:00Z',
+        checkOut: '2022-08-15T12:03:00Z',
+        qtdHospeder: 3,
+        userId: '62e5efd9a840f407ac961a97',
+        hospedes: [
+          {
+            id: '62ea248785a186da1dad30f6',
+            createdAT: '2022-08-03T07:32:23.906Z',
+            updatedAt: '2022-08-03T07:32:23.907Z',
+            nome: 'Marcos da Silva',
+            email: 'marcos@mail.com',
+            reservaID: '62ea248785a186da1dad30f5',
+          },
+          {
+            id: '62ea248785a186da1dad30f6',
+            createdAT: '2022-08-03T07:32:23.906Z',
+            updatedAt: '2022-08-03T07:32:23.907Z',
+            nome: 'Noemi da Silva',
+            email: 'naomi@mail.com',
+            reservaID: '62ea248785a186da1dad30f5',
+          },
+        ],
       },
     },
   })
@@ -107,6 +220,11 @@ export class ReservaController {
     description: 'Recurso para atualização de reserva',
     summary: 'Atualizar reserva',
   })
+  @ApiParam({
+    name: 'id',
+    description: 'ID da reserva para atualização.',
+    example: '62ea248785a186da1dad30f5',
+  })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Erro de validação.',
@@ -116,6 +234,41 @@ export class ReservaController {
         statusCode: HttpStatus.BAD_REQUEST,
         message: ['O email do hospede (Marcos da silva) não é válido'],
         error: 'Bad Request',
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Dados da Reserva atualizada',
+    schema: {
+      type: 'object',
+      example: {
+        id: '62ea248785a186da1dad30f5',
+        createdAt: '2022-08-03T07:32:23.906Z',
+        updatedAt: '2022-08-03T07:32:23.907Z',
+        nomeApartamento: 'Suíte Diamantina',
+        checkIn: '2022-08-12T12:03:00Z',
+        checkOut: '2022-08-15T12:03:00Z',
+        qtdHospeder: 3,
+        userId: '62e5efd9a840f407ac961a97',
+        hospedes: [
+          {
+            id: '62ea248785a186da1dad30f6',
+            createdAT: '2022-08-03T07:32:23.906Z',
+            updatedAt: '2022-08-03T07:32:23.907Z',
+            nome: 'Marcos da Silva',
+            email: 'marcos@mail.com',
+            reservaID: '62ea248785a186da1dad30f5',
+          },
+          {
+            id: '62ea248785a186da1dad30f6',
+            createdAT: '2022-08-03T07:32:23.906Z',
+            updatedAt: '2022-08-03T07:32:23.907Z',
+            nome: 'Noemi da Silva',
+            email: 'naomi@mail.com',
+            reservaID: '62ea248785a186da1dad30f5',
+          },
+        ],
       },
     },
   })
@@ -132,6 +285,29 @@ export class ReservaController {
   @ApiOperation({
     description: 'Recurso para remoção de reserva',
     summary: 'Excluir reserva',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID da reserva a ser removida.',
+    example: '62ea248785a186da1dad30f5',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Reserva removida',
+    schema: {
+      type: 'object',
+      example: {
+        id: '62ea248785a186da1dad30f5',
+        createdAt: '2022-08-03T07:32:23.906Z',
+        updatedAt: '2022-08-03T07:32:23.907Z',
+        nomeApartamento: 'Suíte Diamantina',
+        checkIn: '2022-08-12T12:03:00Z',
+        checkOut: '2022-08-15T12:03:00Z',
+        qtdHospeder: 3,
+        userId: '62e5efd9a840f407ac961a97',
+        hospedes: [],
+      },
+    },
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -166,6 +342,43 @@ export class ReservaController {
     name: 'checkOut',
     description: 'Data hora em formato ISO.',
     example: '2022-08-10T12:00:00Z',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Listagem de Reservas encontradas',
+    schema: {
+      type: 'object',
+      example: [
+        {
+          id: '62ea248785a186da1dad30f5',
+          createdAt: '2022-08-03T07:32:23.906Z',
+          updatedAt: '2022-08-03T07:32:23.907Z',
+          nomeApartamento: 'Suíte Diamantina',
+          checkIn: '2022-08-12T12:03:00Z',
+          checkOut: '2022-08-15T12:03:00Z',
+          qtdHospeder: 3,
+          userId: '62e5efd9a840f407ac961a97',
+          hospedes: [
+            {
+              id: '62ea248785a186da1dad30f6',
+              createdAT: '2022-08-03T07:32:23.906Z',
+              updatedAt: '2022-08-03T07:32:23.907Z',
+              nome: 'Marcos da Silva',
+              email: 'marcos@mail.com',
+              reservaID: '62ea248785a186da1dad30f5',
+            },
+            {
+              id: '62ea248785a186da1dad30f6',
+              createdAT: '2022-08-03T07:32:23.906Z',
+              updatedAt: '2022-08-03T07:32:23.907Z',
+              nome: 'Noemi da Silva',
+              email: 'naomi@mail.com',
+              reservaID: '62ea248785a186da1dad30f5',
+            },
+          ],
+        },
+      ],
+    },
   })
   async findManyCheckInCheckOut(
     @Param('checkIn') checkIn: string,
