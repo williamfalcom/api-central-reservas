@@ -237,4 +237,34 @@ describe('ReservaService', () => {
       expect(mockPrisma.reserva.delete).toBeCalledTimes(1);
     });
   });
+
+  describe('dateIsVacant', () => {
+    it('deve verificar se há vaga para a reserva entre check-in e check-out', async () => {
+      const reserva = TestUtil.givMeAValidReserva();
+      mockPrisma.reserva.findMany.mockResolvedValueOnce([reserva, reserva]);
+      const dateVacate = await testReservaService.dateIsVacant(
+        '2022-08-01T12:00:00Z',
+        '2022-08-10T12:00:00Z',
+      );
+      expect(dateVacate).toHaveLength(2);
+      expect(mockPrisma.reserva.findMany).toBeCalledTimes(1);
+    });
+  });
+
+  describe('findManyCheckInCheckOut', () => {
+    it('deve buscar reservas por check-in e check-out', async () => {
+      const reserva = TestUtil.givMeAValidReserva();
+      mockPrisma.reserva.findMany.mockResolvedValueOnce([
+        reserva,
+        reserva,
+        reserva,
+      ]);
+      const dateVacate = await testReservaService.findManyCheckInCheckOut(
+        '2022-08-01T12:00:00Z',
+        '2022-08-10T12:00:00Z',
+      );
+      expect(dateVacate).toHaveLength(3);
+      expect(mockPrisma.reserva.findMany).toBeCalledTimes(1);
+    });
+  });
 });
