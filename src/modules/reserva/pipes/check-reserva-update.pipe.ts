@@ -9,9 +9,10 @@ import * as moment from 'moment';
 @Injectable()
 export class CheckReservaUpdatePipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
-    if (metadata.type == 'param') {
+    if (metadata.type != 'body') {
       return value;
     }
+
     const dateNow = moment();
     const dateCheckIn = moment(value.checkIn);
     const dataCheckOut = moment(value.checkOut);
