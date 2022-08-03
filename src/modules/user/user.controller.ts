@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   NotFoundException,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -128,6 +130,7 @@ export class UserController {
       },
     },
   })
+  @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
     await this.userService.remove(id).catch((error) => {
       throw new NotFoundException(error.message);
