@@ -14,8 +14,6 @@ export class UserService {
       ...data,
       senha: await bcrypt.hash(data.senha, 10),
     };
-    //this.prisma.$connect();
-
     const userExists = await this.prisma.user.findFirst({
       where: {
         email: data.email,
@@ -54,7 +52,7 @@ export class UserService {
 
   async findOne(id: string): Promise<CreateUserDto> {
     const user = await this.prisma.user
-      .findUnique({
+      .findUniqueOrThrow({
         where: {
           id,
         },
@@ -62,10 +60,6 @@ export class UserService {
       .catch(() => {
         throw new Error('User not existes!');
       });
-
-    if (!user) {
-      throw new Error('User not existes!');
-    }
 
     return {
       ...user,
@@ -79,7 +73,7 @@ export class UserService {
     }
 
     await this.prisma.user
-      .findUnique({
+      .findUniqueOrThrow({
         where: {
           id,
         },
@@ -102,17 +96,13 @@ export class UserService {
   }
 
   async remove(id: string) {
-    const userExists = await this.prisma.user
-      .findUnique({
+    await this.prisma.user
+      .findUniqueOrThrow({
         where: { id },
       })
       .catch(() => {
         throw new Error('User not existes!');
       });
-
-    if (!userExists) {
-      throw new Error('User not existes!');
-    }
 
     return await this.prisma.user.delete({
       where: {
@@ -123,7 +113,7 @@ export class UserService {
 
   async findByEmail(email: string): Promise<UpdateUserDto> {
     return await this.prisma.user
-      .findUnique({
+      .findUniqueOrThrow({
         where: { email },
       })
       .catch(() => {
