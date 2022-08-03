@@ -22,6 +22,10 @@ export class CheckReservaPipe implements PipeTransform<CreateReservaDto> {
   }
 
   async transform(value: CreateReservaDto, metadata: ArgumentMetadata) {
+    if (metadata.type != 'body') {
+      return value;
+    }
+
     const dateNow = moment();
     const dateCheckIn = moment(value.checkIn);
     const dataCheckOut = moment(value.checkOut);
