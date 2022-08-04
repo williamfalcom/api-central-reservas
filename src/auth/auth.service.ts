@@ -8,42 +8,40 @@ import { UserToken } from './models/UserToken';
 
 @Injectable()
 export class AuthService {
-    
-    constructor(
-        private readonly userService: UserService, 
-        private readonly jwtService: JwtService
-    ){}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-    async validateUser(email: string, senha: string) {
+  async validateUser(email: string, senha: string) {
+    const user = await this.userService.findByEmail(email).catch(() => {
+      throw new Error('Usuário ou senha inválido.');
+    });
 
-        const user = await this.userService.findByEmail(email);
-        
-        if(user){
-            //Checar senha
-            const isSenhaValid = await bcrypt.compare(senha, user.senha);
-            if(isSenhaValid){
-                return {
-                    ...user,
-                    senha: undefined,
-                }
-            }
-        }
-        throw new Error("Usuário ou senha inválido.");
-    }
-
-    login(user: User): UserToken {
-        const payload: UserPayload = {
-            sub: user.id,
-            email: user.email,
-            nome: user.nome,
-        }
-        
-        const jwtToken = this.jwtService.sign(payload);
-
+    if (user) {
+      //Checar senha
+      const isSenhaValid = await bcrypt.compare(senha, user.senha);
+      if (isSenhaValid) {
         return {
-            access_token: jwtToken,
-        }
-
+          ...user,
+          senha: undefined,
+        };
+      }
     }
+    throw new Error('Usuário ou senha inválido.');
+  }
 
+  login(user: User): UserToken {
+    const payload: UserPayload = {
+      sub: user.id,
+      email: user.email,
+      nome: user.nome,
+    };
+
+    const jwtToken = this.jwtService.sign(payload);
+
+    return {
+      access_token: jwtToken,
+    };
+  }
 }

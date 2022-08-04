@@ -96,7 +96,6 @@ export class AuthController {
     },
   })
   getMe(@CurrentUser() user: User): User {
-    console.log(user);
     return user;
   }
 }

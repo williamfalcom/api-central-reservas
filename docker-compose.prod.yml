@@ -1,12 +1,10 @@
-version: '3.8'
+version: '3.1'
 services:
   app:
-    image: node:16
-    container_name: app-dev
+    build: .
+    container_name: app-prod
     user: root
     working_dir: /app
-    volumes:
-      - .:/app
     ports:
       - '3000:3000'
     tty: true
