@@ -1,18 +1,5 @@
-version: '3.8'
+version: '3.1'
 services:
-  app:
-    image: node:16
-    container_name: app-dev
-    user: root
-    working_dir: /app
-    volumes:
-      - .:/app
-    ports:
-      - '3000:3000'
-    tty: true
-    networks:
-      - central-net
-
   mongo1:
     hostname: mongo1
     container_name: mongo1
