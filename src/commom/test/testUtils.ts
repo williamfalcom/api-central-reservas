@@ -1,4 +1,3 @@
-import { Hospede } from '../../modules/reserva/entities/hospede.entity';
 import { Reserva } from '../../modules/reserva/entities/reserva.entity';
 import { User } from '../../modules/user/entities/user.entity';
 
